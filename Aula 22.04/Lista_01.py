@@ -145,3 +145,50 @@ else:
     print(f'Maior valor = {maior}')
     print(f'Menor valor = {menor}')
     print(f'A soma do segundo maior valor com o segundo menor = {sum(ls)}')
+
+print()
+
+print('Exercício 9')
+hora, minuto = input('Digite o horário no formato hh:mm\n').split(':')
+hora = int(hora)
+minuto = int(minuto)
+if 0 <= hora < 24 and 0 <= minuto < 60:
+    hora %= 12
+    angulo = abs(11 * minuto - 60 * hora) / 2
+    print()
+    print(f'Menor ângulo entre os ponteiros = {min(angulo, 360 - angulo):.0f} graus')
+else:
+    print('Hora Inválida')
+
+print()
+
+print('Exercício 10')
+dia, mes, ano = input('Digite uma data no formato dd/mm/aaaa\n').split('/')
+dia, mes, ano = int(dia), int(mes), int(ano)
+trinta = [4, 6, 9, 11]
+if (ano % 400 == 0) or (ano % 4 == 0 and ano % 100 != 0):
+    bissexto = True
+else:
+    bissexto = False
+if mes < 1 or mes > 12:
+    valido = False
+elif mes in trinta:
+    if dia < 1 or dia > 30:
+        valido = False
+    else:
+        valido = True
+elif mes == 2:
+    if dia < 1 or (bissexto and dia > 29) or (not bissexto and dia > 28):
+        valido = False
+    else:
+        valido = True
+else:
+    if dia < 1 or dia > 31:
+        valido = False
+    else:
+        valido = True
+
+if valido:
+    print('A data informada é válida')
+else:
+    print('A data informada não é válida')
