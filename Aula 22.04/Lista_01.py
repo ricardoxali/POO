@@ -187,8 +187,29 @@ else:
         valido = False
     else:
         valido = True
-
+print()
 if valido:
     print('A data informada é válida')
 else:
     print('A data informada não é válida')
+
+print()
+
+print('Exercício 11')
+meses = {
+    '01': 'janeiro',
+    '02': 'fevereiro',
+    '03': 'março',
+    '04': 'abril',
+    '05': 'maio',
+    '06': 'junho',
+    '07': 'julho',
+    '08': 'agosto',
+    '09': 'setembro',
+    '10': 'outubro',
+    '11': 'novembro',
+    '12': 'dezembro'
+}
+dia, mes, ano = input('Digite uma data no formato dd/mm/aaaa\n').split('/')
+print()
+print(f'A data é {dia} de {meses[mes]} de {ano}')
