@@ -52,16 +52,16 @@ class Pais:
         if v == '': raise ValueError('O nome não pode ser vazio')
         self.__nome = v
     def SetHabitantes(self, v):
-        if v <= 0: raise ValueError('O número de habitantes deve ser maior que zero')
+        if v <= 0: raise ValueError('O número deve ser maior que zero')
         self.__habitantes = v
     def SetArea(self, v):
-        if v <= 0: raise ValueError('A área deve ser maior que zero')
+        if v <= 0: raise ValueError('O valor deve ser maior que zero')
         self.__area = v
     def GetNome(self): return self.__nome
     def GetHabitantes(self): return self.__habitantes
     def GetArea(self): return self.__area
     def Densidade(self): return self.GetHabitantes() / self.GetArea()
-    def ToString(self): return f'A densidade demográfica de {self.GetNome()} é de {self.Densidade()} hab./km²'
+    def ToString(self): return f'A densidade demográfica de {self.GetNome()} é de {self.Densidade():.2f} hab./km²'
 
 class PaisUI:
     @staticmethod
@@ -77,4 +77,9 @@ class PaisUI:
     @staticmethod
     def calculo():
         n = input('Informe o nome do páis: ')
-        h = int(input('info'))
+        h = int(input('Informe o número de habitantes do país: '))
+        a = int(input('Informe o valor da área do país: '))
+        x = Pais(n, h, a)
+        print(x.ToString())
+
+PaisUI.main()

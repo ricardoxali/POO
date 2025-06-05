@@ -53,6 +53,7 @@ class ESG: #Equação do Segundo Grau
         self.SetB(b)
         self.SetC(c)
     def SetA(self, v):
+        if v == 0: raise ValueError('O coeficiente não pode ser nulo')
         self.__a = v
     def SetB(self, v):
         self.__b = v
@@ -68,8 +69,8 @@ class ESG: #Equação do Segundo Grau
     def Raiz2(self): 
         if self.TemRaizesReais(): return (-self.GetB() - self.Delta() ** 0.5) / (2 * self.GetA())
     def ToString(self):
-        if self.TemRaizesReais(): return f'As raízes da equação do segundo grau cujos coeficientes a, b e c são, respectivamente, {self.GetA()}, {self.GetB()} e {self.GetC()} são {self.Raiz1()} e {self.Raiz2()}'
-        else: raise ValueError
+        if self.TemRaizesReais(): return f'As raízes da equação do segundo grau cujos coeficientes a, b e c são, respectivamente, {self.GetA()}, {self.GetB()} e {self.GetC()} são {self.Raiz1():.2f} e {self.Raiz2():.2f}'
+        else: return f'A equação do segundo grau cujos coeficientes a, b e c são, respectivamente, {self.GetA()}, {self.GetB()} e {self.GetC()} não possui raízes reais'
     
 a = int(input('Coeficiente a: '))
 b = int(input('Coeficiente b: '))
