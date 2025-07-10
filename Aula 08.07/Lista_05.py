@@ -77,6 +77,99 @@ class PacienteUI:
             if n.get_cpf() == c:
                 print(n.Idade())
 
+PacienteUI.main()
+
 print()
 
 print('Questão 2 - Um Boleto')
+from enum import Enum
+
+class Pagamento(Enum):
+    EmAberto = 0
+    PagoParcial = 1
+    Pago = 2
+class Boleto:
+    def __init__(self, cb, de, dv, vb):
+        self.__codBarras = cb
+        self.__dataEmissao = de
+        self.__dataVencimento = dv
+        self.__dataPago = None
+        self.__valorBoleto = vb
+        self.__valorPago = 0.0
+        self.__situacaoPagamento = Pagamento.EmAberto
+    def Pagar(self, v):
+        if v <= 0:
+            print("Valor inválido!")
+            return
+        self.__valorPago += v
+        self.__dataPago = date.today()
+        self.__situacaoPagamento = self.Situacao()
+    def Situacao(self):
+        if self.__valorPago == 0:
+            return Pagamento.EmAberto
+        elif self.__valorPago < self.__valorBoleto:
+            return Pagamento.PagoParcial
+        else:
+            return Pagamento.Pago
+    def __str__(self):
+        de, me, ae = self.__dataEmissao.split('/')
+        dv, mv, av = self.__dataVencimento.split('/')
+        if self.__dataPago:
+            dp, mp, ap = self.__dataPago.day, self.__dataPago.month, self.__dataPago.year
+            pagamento = f'{dp}/{mp}/{ap}'
+        else:
+            pagamento = "Não pago"
+        return (
+            f"\n--- Detalhes do Boleto ---\n"
+            f"Código de Barras   : {self.__codBarras}\n"
+            f"Data de Emissão    : {de}/{me}/{ae}\n"
+            f"Data de Vencimento : {dv}/{mv}/{av}\n"
+            f"Data do Pagamento  : {pagamento}\n"
+            f"Valor do Boleto    : R$ {self.__valorBoleto:.2f}\n"
+            f"Valor Pago         : R$ {self.__valorPago:.2f}\n"
+            f"Situação           : {self.__situacaoPagamento.name}\n"
+        )
+
+class BoletoUI:
+    __boleto = []
+    @staticmethod
+    def main():
+        op = 0
+        while op != 5:
+            op = BoletoUI.menu()
+            if op == 1: BoletoUI.registrar()
+            if op == 2: BoletoUI.exibir()
+            if op == 3: BoletoUI.atualizar()
+            if op == 4: BoletoUI.pagar()
+    @staticmethod
+    def menu():
+        print("1-Registrar, 2-Exibir, 3-Atualizar, 4-Pagar, 5-Fim")
+        return int(input("Escolha uma opção: "))
+    @classmethod
+    def registrar(cls):
+        cb = input('Informe o código de barras: ')
+        de = input('Informe a data de emissão: ')
+        dv = input('Informe a data de vencimento: ')
+        vb = float(input('Informe o valor do boleto: '))
+        b = Boleto(cb, de, dv, vb)
+        cls.__boleto.append(b)
+    @classmethod
+    def exibir(cls):
+        for c in cls.__boleto:
+            print(c)
+    @classmethod
+    def atualizar(cls):
+        cb = input('Informe o código de barras: ')
+        de = input('Informe a data de emissão: ')
+        dv = input('Informe a data de vencimento: ')
+        vb = float(input('Informe o valor do boleto: '))
+        b = Boleto(cb, de, dv, vb)
+        cls.__boleto.clear()
+        cls.__boleto.append(b)
+    @classmethod
+    def pagar(cls):
+        vp = float(input('Informe o valor pago: '))
+        cls.__boleto[0].Pagar(vp)
+        print('Pagamento registrado')
+
+BoletoUI.main()
