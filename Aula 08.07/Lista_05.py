@@ -173,3 +173,108 @@ class BoletoUI:
         print('Pagamento registrado')
 
 BoletoUI.main()
+
+print()
+
+print('Questão 3 - Uma Agenda de Contatos')
+class Contato:
+    def __init__(self, i, n, e, f, dn):
+        self.__id = i
+        self.__nome = n
+        self.__email = e
+        self.__fone = f
+        self.__nasc = dn
+    def get_nome(self):
+        return self.__nome
+    def get_nasc(self):
+        return self.__nasc
+    def __str__(self):
+        return f"{self.__id} - {self.__nome} - {self.__email} - {self.__fone} - {self.__nasc}"
+    
+class ContatoUI:
+    __contatos = []
+    @classmethod
+    def main(cls):
+        op = 0
+        while op != 7:
+            op = ContatoUI.menu()
+            if op == 1: ContatoUI.inserir()
+            if op == 2: ContatoUI.listar()
+            if op == 3: ContatoUI.atualizar()
+            if op == 4: ContatoUI.excluir()
+            if op == 5: ContatoUI.pesquisar()
+            if op == 6: ContatoUI.aniversariantes()
+    @classmethod
+    def menu(cls):
+        print("1-Inserir, 2-Listar, 3-Atualizar, 4-Excluir, 5-Pesquisar, 6-Aniversariantes, 7-Fim")
+        return int(input("Escolha uma opção: "))
+    @classmethod
+    def inserir(cls):
+        id = int(input("Informe o id do contato: "))
+        nome = input("Informe o nome: ")
+        email = input("Informe o e-mail: ")
+        fone = input("Informe o fone: ")
+        nasc = input("Informe a data de nascimento: ")
+        dia, mes, ano = map(int, nasc.split('/'))
+        c = Contato(id, nome, email, fone, date(ano, mes, dia))
+        cls.__contatos.append(c)
+    @classmethod
+    def listar(cls):
+        for c in cls.__contatos:
+            print(c)
+    @classmethod
+    def atualizar(cls):
+        n = input('Informe o nome: ')
+        for c in cls.__contatos:
+            if c.get_nome() == n:
+                i = cls.__contatos.index(c)
+                id = input('Novo id do contato: ')
+                nome = input('Novo nome: ')
+                email = input('Novo email: ')
+                fone = input('Novo telefone: ')
+                nasc = input('Nova data de nascimento: ')
+                dia, mes, ano = map(int, nasc.split('/'))
+                x = Contato(id, nome, email, fone, date(ano, mes, dia))
+                cls.__contatos.pop(i)
+                cls.__contatos.insert(i, x)
+    @classmethod
+    def excluir(cls):
+        n = input('Informe o nome: ')
+        for c in cls.__contatos:
+            if c.get_nome() == n:
+                cls.__contatos.remove(c)
+    @classmethod
+    def pesquisar(cls):
+        n = input("Informe o nome: ")
+        for c in cls.__contatos:
+            if c.get_nome().startswith(n): print(c)
+    @classmethod
+    def aniversariantes(cls):
+        aniver = []
+        m = input('Informe o mês de referência: ')
+        meses = {
+            'janeiro': 1, 'fevereiro': 2, 'março': 3, 'abril': 4,
+            'maio': 5, 'junho': 6, 'julho': 7, 'agosto': 8,
+            'setembro': 9, 'outubro': 10, 'novembro': 11, 'dezembro': 12
+        }
+        try:
+            mes = int(m)
+            if mes < 1 or mes > 12: 
+                print('Mês inválido')
+                return
+        except ValueError:
+            mes = meses.get(m.lower(), 0)
+            if mes == 0:
+                print('Mês inválido')
+                return
+        for c in cls.__contatos:
+            if c.get_nasc().month == mes:
+                aniver.append(c)
+        if len(aniver) == 0:
+            print('Nenhum aniversariante')
+        else:
+            for c in aniver:
+                aniversario = c.get_nasc().strftime('%d/%m/%Y')
+                print(f'{c.get_nome()}: {aniversario}')
+
+ContatoUI.main()
