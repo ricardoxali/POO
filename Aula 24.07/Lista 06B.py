@@ -1,4 +1,5 @@
 from datetime import date
+import json
 class Contato:
     def __init__(self, i, no, e, f, na):
         self.__id = i
@@ -9,15 +10,17 @@ class Contato:
         self.__nasc = date(a, m, d)
     def get_id(self): return self.__id
     def get_nome(self): return self.__nome
+    def get_email(self): return self.__email
+    def get_fone(self): return self.__fone
     def get_nasc(self): return self.__nasc
     def __str__(self):
-        return f"{self.__id} - {self.__nome} - {self.__email} - {self.__fone} - {self.__nasc}"
+        return f"{self.__id} - {self.__nome} - {self.__email} - {self.__fone} - {self.__nasc.day:02d}/{self.__nasc.month:02d}/{self.__nasc.year}"
 
 class ContatoUI:
     __contatos = []
     @staticmethod
     def menu():
-        op = int(input('1-Inserir, 2-Listar, 3-Listar Específico, 4-Atualizar, 5-Excluir, 6-Pesquisar, 7-Aniversariantes, 8-Abrir, 9-Salvar, 10-Sair'))
+        op = int(input('1-Inserir, 2-Listar, 3-Listar Específico, 4-Atualizar, 5-Excluir, 6-Pesquisar, 7-Aniversariantes, 8-Abrir, 9-Salvar, 10-Sair\n'))
         return op
     @staticmethod
     def main():
@@ -48,13 +51,13 @@ class ContatoUI:
             print(c)
     @classmethod
     def listar_id(cls):
-        i = input('Digite o ID do contato: ')
+        i = int(input('Digite o ID do contato: '))
         for c in cls.__contatos:
             if c.get_id() == i:
                 print(c)
     @classmethod
     def atualizar(cls):
-        i = input('Digite o ID do contato: ')
+        i = int(input('Digite o ID do contato: '))
         for c in cls.__contatos:
             if c.get_id() == i:
                 ind = cls.__contatos.index(c)
@@ -68,7 +71,7 @@ class ContatoUI:
                 cls.__contatos.insert(ind, x)
     @classmethod
     def excluir(cls):
-        i = input('Digite o ID do contato: ')
+        i = int(input('Digite o ID do contato: '))
         for c in cls.__contatos:
             if c.get_id() == i:
                 cls.__contatos.remove(c)
@@ -100,8 +103,30 @@ class ContatoUI:
         for a in aniver:
             print(a)
     @classmethod
-    def abrir(cls):
-        pass
-    @classmethod
     def salvar(cls):
-        pass
+        x = []
+        for c in cls.__contatos:
+            dic = vars(c).copy()
+            nasc = c.get_nasc()
+            dic['_Contato__nasc'] = f'{nasc.day:02d}/{nasc.month:02d}/{nasc.year}'
+            x.append(dic)
+        with open('contatos.json', mode='w') as arq:
+            json.dump(x, arq, default=vars)
+    @classmethod
+    def abrir(cls):
+        x = []
+        with open('contatos.json', mode='r') as arq:
+            contatos = json.load(arq)
+            for dic in contatos:
+                c = Contato(
+                    dic['_Contato__id'],
+                    dic['_Contato__nome'],
+                    dic['_Contato__email'],
+                    dic['_Contato__fone'],
+                    dic['_Contato__nasc']
+                    )
+                x.append(c)
+        for c in x:
+            print(c)
+
+ContatoUI.main()
