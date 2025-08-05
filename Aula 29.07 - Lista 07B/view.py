@@ -20,4 +20,4 @@ class View:
         return ContatoDAO.pesquisar(i)
     @staticmethod
     def contato_aniversariantes(i):
-        return ContatoDAO.aniversariantes(i     )
+        return ContatoDAO.aniversariantes(i)
