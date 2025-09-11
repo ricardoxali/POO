@@ -1,4 +1,4 @@
 import streamlit as st
-from retanguloUI import RetanguloUI
+from pacienteUI import PacienteUI
 
-RetanguloUI.main()
+PacienteUI.main()

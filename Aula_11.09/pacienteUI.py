@@ -1,13 +1,13 @@
 import streamlit as st
-from retangulo import Retangulo
+from paciente import Paciente
 
-class RetanguloUI:
+class PacienteUI:
     def main():
-        st.header('Cálculos com Retângulo')
-        base = st.text_input('Valor da base')
-        altura = st.text_input('Valor da altura')
-        if st.button('Calcular'):
-            b = float(base)
-            h = float(altura)
-            r = Retangulo(b, h)
-            st.write(r)
+        st.header('Dados do Paciente')
+        nome = st.text_input('Nome')
+        cpf = st.text_input('CPF')
+        fone = st.text_input('Telefone')
+        nasc = st.text_input('Data de Nascimento')
+        if st.button('Idade'):
+            p = Paciente(nome, cpf, fone, nasc)
+            st.write(p.Idade())
