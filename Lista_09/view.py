@@ -6,7 +6,7 @@ class View:
         return ServicoDAO.listar()
     def servico_listar_id(i):
         return ServicoDAO.listar_id(i)
-    def servico_atualizar(i, d, v):
-        ServicoDAO.atualizar(Servico(i, d, v))
+    def servico_atualizar(id_antigo, id_novo, d, v):
+        ServicoDAO.atualizar(id_antigo, Servico(id_novo, d, v))
     def servico_excluir(i):
         ServicoDAO.excluir(i)

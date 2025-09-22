@@ -9,7 +9,7 @@ class Servico:
             v = int(v)
         except ValueError:
             raise ValueError('O id deve ser um número inteiro positivo')
-        if v <= 0:
+        if v < 0:
             raise ValueError('O id deve ser um número inteiro positivo')
         self.__id = v
     def set_desc(self, v):
@@ -30,9 +30,9 @@ class Servico:
     def get_id(self): return self.__id
     def get_desc(self): return self.__desc
     def get_valor(self): return self.__valor
-    def __str__(self): return f"{self.get_id()} - {self.get_desc()} - {self.get_valor():.2f}"
+    def __str__(self): return f"{self.get_id()} - {self.get_desc()} - R$ {self.get_valor():.2f}"
     def to_json(self):
-        dic = {"id":self.__id, "desc":self.__desc, "desc":self.__valor}
+        dic = {"id":self.__id, "desc":self.__desc, "valor":self.__valor}
         return dic
     @staticmethod
     def from_json(dic): return Servico(dic["id"], dic["desc"], dic["valor"])
@@ -44,7 +44,8 @@ class ServicoDAO:
         cls.abrir()
         id = 0
         for aux in cls.__objetos:
-            if aux.get_id() > id: id = aux.get_id()
+            if aux.get_id() > id:
+                id = aux.get_id()
         obj.set_id(id + 1)
         cls.__objetos.append(obj)
         cls.salvar()
@@ -56,17 +57,19 @@ class ServicoDAO:
     def listar_id(cls, i):
         cls.abrir()
         for s in cls.__objetos:
-            if s.get_id() == i:
+            if s.get_id() == int(i):
                 return s
+        return 'Serviço não cadastrado'
+            
     @classmethod
-    def atualizar(cls, obj):
+    def atualizar(cls, id, obj):
         cls.abrir()
-        aux = cls.listar_id(obj.get_id())
-        if aux != None:
-            index = cls.__objetos.index(aux)
-            cls.__objetos[index] = obj
-            cls.__objetos.sort(key=lambda o: o.get_id())
-            cls.salvar()
+        for i, s in enumerate(cls.__objetos):
+            if s.get_id() == int(id):
+                cls.__objetos[i] = obj
+                break
+        cls.__objetos.sort(key=lambda o: o.get_id())
+        cls.salvar()
     @classmethod
     def excluir(cls, i):
         cls.abrir()
