@@ -60,7 +60,6 @@ class ServicoDAO:
             if s.get_id() == int(i):
                 return s
         return 'Serviço não cadastrado'
-            
     @classmethod
     def atualizar(cls, id, obj):
         cls.abrir()

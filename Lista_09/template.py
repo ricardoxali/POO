@@ -72,3 +72,9 @@ class ManterServicoUI:
                 st.success('Serviço excluído com sucesso')
                 time.sleep(2)
                 st.rerun()
+    
+class IndexUI:
+    def main():
+        ManterServicoUI.main()
+
+IndexUI.main()
