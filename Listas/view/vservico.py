@@ -1,4 +1,4 @@
-from model import Servico, ServicoDAO
+from Listas.model.mservico import Servico, ServicoDAO
 class View:
     def servico_inserir(d, v):
         ServicoDAO.inserir(Servico(0, d, v))

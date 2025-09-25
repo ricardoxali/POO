@@ -1,7 +1,7 @@
 import streamlit as st
 import pandas as pd
 import time
-from view import View
+from Listas.view.vservico import View
 
 class ManterServicoUI:
     def main():
