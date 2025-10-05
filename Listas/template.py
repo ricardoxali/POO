@@ -13,38 +13,42 @@ class ManterClienteUI:
         with tab3: ManterClienteUI.atualizar()
         with tab4: ManterClienteUI.excluir()
     def listar():
-        clientes = View.cliente_listar()
+        clientes = [c for c in View.cliente_listar() if c.get_email() != 'admin'] # Retira o admin
         if len(clientes) == 0: st.write("Nenhum cliente cadastrado")
         else:
             list_dic = []
-            for obj in clientes: list_dic.append(obj.to_json())
+            for obj in clientes:
+                if obj.get_email() != "admin": list_dic.append(obj.to_json())
             df = pd.DataFrame(list_dic)
+            df = df.rename(columns={"id":"ID", "nome":"Nome", "email":"E-mail", "fone":"Telefone", "senha":"Senha"})
             st.dataframe(df)
     def inserir():
         nome = st.text_input("Informe o nome")
-        email = st.text_input("Informe o e-mail")
-        fone = st.text_input("Informe o fone")
+        email = st.text_input("Informe o e-mail", None)
+        fone = st.text_input("Informe o telefone")
+        senha = st.text_input("Informe a senha", None, type="password")
         if st.button("Inserir"):
-            View.cliente_inserir(nome, email, fone)
+            View.cliente_inserir(nome, email, fone, senha)
             st.success("Cliente inserido com sucesso")
             time.sleep(2)
             st.rerun()
     def atualizar():
-        clientes = View.cliente_listar()
+        clientes = [c for c in View.cliente_listar() if c.get_email() != 'admin'] # Retira o admin
         if len(clientes) == 0: st.write("Nenhum cliente cadastrado")
         else:
             op = st.selectbox("Atualização de Clientes", clientes)
             nome = st.text_input("Informe o novo nome", op.get_nome())
             email = st.text_input("Informe o novo e-mail", op.get_email())
             fone = st.text_input("Informe o novo fone", op.get_fone())
+            senha = st.text_input("Informe a nova senha", op.get_senha(), type="password")
             if st.button("Atualizar"):
                 id = op.get_id()
-                View.cliente_atualizar(id, nome, email, fone)
+                View.cliente_atualizar(id, nome, email, fone, senha)
                 st.success("Cliente atualizado com sucesso")
                 time.sleep(2)
                 st.rerun()
     def excluir():
-        clientes = View.cliente_listar()
+        clientes = [c for c in View.cliente_listar() if c.get_email() != 'admin'] # Retira o admin
         if len(clientes) == 0: st.write("Nenhum cliente cadastrado")
         else:
             op = st.selectbox("Exclusão de Clientes", clientes)
@@ -130,9 +134,10 @@ class ManterHorarioUI:
                 if profissional != None: profissional = profissional.get_nome()
                 dic.append({'id' : obj.get_id(), 'data' : obj.get_data(), 'confirmado' : obj.get_confirmado(), 'cliente' : cliente, 'serviço' : servico, 'profissional' : profissional})
             df = pd.DataFrame(dic)
+            df = df.rename(columns={"id":"ID", "data":"Data", "confirmado":"Confirmado", "cliente":"Cliente", "serviço":"Serviço", "profissional":"Profissional"})
             st.dataframe(df)
     def inserir():
-        clientes = View.cliente_listar()
+        clientes = [c for c in View.cliente_listar() if c.get_email() != 'admin'] # Retira o admin
         servicos = View.servico_listar()
         profissionais = View.profissional_listar()
         data = st.text_input('Informe a data e horário do serviço', datetime.now().strftime('%d/%m/%Y %H:%M'))
@@ -246,13 +251,16 @@ class ManterProfissionalUI:
             list_dic = []
             for obj in profissionais: list_dic.append(obj.to_json())
             df = pd.DataFrame(list_dic)
+            df = df.rename(columns={"id":"ID", "nome":"Nome", "especialidade":"Especialidade", "conselho":"Conselho","email":"E-mail", "senha":"Senha"})
             st.dataframe(df)
     def inserir():
         nome = st.text_input("Informe o nome")
         espec = st.text_input("Informe a especialidade")
         conselho = st.text_input("Informe o conselho")
+        email = st.text_input('Informe o email')
+        senha = st.text_input('Informe a senha', type='password')
         if st.button("Inserir"):
-            View.profissional_inserir(nome, espec, conselho)
+            View.profissional_inserir(nome, espec, conselho, email, senha)
             st.success("Profissional inserido com sucesso")
             time.sleep(2)
             st.rerun()
@@ -264,9 +272,11 @@ class ManterProfissionalUI:
             nome = st.text_input("Informe o novo nome", op.get_nome())
             espec = st.text_input("Informe a nova especialidade", op.get_especialidade())
             conselho = st.text_input("Informe o novo conselho", op.get_conselho())
+            email = st.text_input('Informe o novo email', op.get_email())
+            senha = st.text_input('Informe a nova senha', op.get_senha(), type='password')
             if st.button("Atualizar"):
                 id = op.get_id()
-                View.profissional_atualizar(id, nome, espec, conselho)
+                View.profissional_atualizar(id, nome, espec, conselho, email, senha)
                 st.success("Profissional atualizado com sucesso")
                 time.sleep(2)
                 st.rerun()
