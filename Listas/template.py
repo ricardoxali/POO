@@ -1,8 +1,8 @@
+from view import View
+from datetime import datetime
 import streamlit as st
 import pandas as pd
 import time
-from datetime import datetime
-from view import View
 
 class ManterClienteUI:
     def main():
@@ -124,7 +124,7 @@ class ManterHorarioUI:
         horarios = View.horario_listar()
         if len(horarios) == 0: st.write('Nenhum horário cadastrado')
         else:
-            dic = []
+            list_dic = []
             for obj in horarios:
                 cliente = View.cliente_listar_id(obj.get_id_cliente())
                 servico = View.servico_listar_id(obj.get_id_servico())
@@ -132,9 +132,8 @@ class ManterHorarioUI:
                 if cliente != None: cliente = cliente.get_nome()
                 if servico != None: servico = servico.get_desc()
                 if profissional != None: profissional = profissional.get_nome()
-                dic.append({'id' : obj.get_id(), 'data' : obj.get_data(), 'confirmado' : obj.get_confirmado(), 'cliente' : cliente, 'serviço' : servico, 'profissional' : profissional})
-            df = pd.DataFrame(dic)
-            df = df.rename(columns={"id":"ID", "data":"Data", "confirmado":"Confirmado", "cliente":"Cliente", "serviço":"Serviço", "profissional":"Profissional"})
+                list_dic.append({'ID':obj.get_id(), 'Data':obj.get_data(), 'Confirmado':obj.get_confirmado(), 'Cliente':cliente, 'Serviço':servico, 'Profissional':profissional})
+            df = pd.DataFrame(list_dic)
             st.dataframe(df)
     def inserir():
         clientes = [c for c in View.cliente_listar() if c.get_email() != 'admin'] # Retira o admin
@@ -174,7 +173,7 @@ class ManterHorarioUI:
         horarios = View.horario_listar()
         if len(horarios) == 0: st.write('Nenhum horário cadastrado')
         else:
-            clientes = View.cliente_listar()
+            clientes = [c for c in View.cliente_listar() if c.get_email() != 'admin'] # Retira o admin
             servicos = View.servico_listar()
             profissionais = View.profissional_listar()
             op = st.selectbox('Atualização de Horários', horarios)
@@ -291,3 +290,155 @@ class ManterProfissionalUI:
                 st.success("Profissional excluído com sucesso")
                 time.sleep(2)
                 st.rerun()
+
+class LoginUI:
+    def main():
+        st.header('Entrar no Sistema')
+        email = st.text_input('Informe o e-mail')
+        senha = st.text_input('Informe a senha', type="password")
+        if st.button('Entrar'):
+            user = View.cliente_autenticar(email, senha) or View.profissional_autenticar(email, senha)
+            if user:
+                st.session_state["usuario_id"] = user["id"]
+                st.session_state["usuario_nome"] = user["nome"]
+                st.rerun()
+            else:
+                st.write("E-mail ou senha inválidos")
+
+
+class AbrirContaUI:
+    def main():
+        st.header('Abrir Conta no Sistema')
+        nome = st.text_input('Informe o nome')
+        email = st.text_input('Informe o email')
+        fone = st.text_input('Informe a telefone')
+        senha = st.text_input('Informe a senha', type='password')
+        if st.button('Inserir'):
+            View.cliente_inserir(nome, email, fone, senha)
+            st.success('Conta criada com sucesso')
+            time.sleep(2)
+            st.rerun()
+
+class PerfilClienteUI:
+    def main():
+        st.header('Meus Dados')
+        op = View.cliente_listar_id(st.session_state['usuario_id'])
+        nome = st.text_input('Informe o novo nome', op.get_nome())
+        email = st.text_input('Informe o novo e-mail', op.get_email())
+        fone = st.text_input('Informe o novo telefone', op.get_fone())
+        senha = st.text_input('Informe a nova senha', op.get_senha(), type='password')
+        if st.button('Atualizar'):
+            id = op.get_id()
+            View.cliente_atualizar(id, nome, email, fone, senha)
+            st.success('Cliente atualizado com sucesso')
+
+class PerfilProfissionalUI:
+    def main():
+        st.header('Meus Dados')
+        op = View.profissional_listar_id(st.session_state['usuario_id'])
+        nome = st.text_input('Informe o novo nome', op.get_nome())
+        espec = st.text_input('Informe a nova especialidade', op.get_especialidade())
+        conselho = st.text_input('Informe o novo conselho', op.get_conselho())
+        email = st.text_input('Informe o novo email', op.get_email())
+        senha = st.text_input('Informe a nova senha', op.get_senha(), type='password')
+        if st.button('Atualizar'):
+            id = op.get_id()
+            View.profissional_atualizar(id, nome, espec, conselho, email, senha)
+            st.success('Profissional atualizado com sucesso')
+
+class AgendarServicoUI:
+    def main():
+        st.header('Agendar Serviço')
+        profs =  View.profissional_listar()
+        if len(profs) == 0: st.write('Nenhum profissional cadastrado')
+        else:
+            profissional = st.selectbox('Informe o profissional', profs)
+            horarios = View.horario_agendar_horario(profissional.get_id())
+            if len(horarios) == 0: st.write('Nenhum horário disponível')
+            else:
+                horario = st.selectbox('Informe o horário', horarios)
+                servicos = View.servico_listar()
+                servico = st.selectbox('Informe o serviço', servicos)
+                if st.button('Agendar'):
+                    View.horario_atualizar(horario.get_id(), horario.get_data(), False, st.session_state['usuario_id'], servico.get_id(), profissional.get_id())
+                    st.success('Horário agendado com sucesso')
+                    time.sleep(2)
+                    st.rerun()
+
+class AbrirMinhaAgendaUI:
+    def main():
+        st.header('Abrir Minha Agenda')
+        data = st.text_input('Informe a data no formato dd/mm/aaaa')
+        horario_inicial = st.text_input('Informe o horário inicial no formato HH:MM')
+        horario_final = st.text_input('Informe o horário final no formato HH:MM')
+        intervalo = st.text_input('Informe o intervalo entre os horários (min)')
+        if st.button('Abrir Agenda'):
+            hora_inicial, min_inicial = map(int, horario_inicial.split(':'))
+            hora_final, min_final = map(int, horario_final.split(':'))
+            inicio_total = hora_inicial * 60 + min_inicial
+            fim_total = hora_final * 60 + min_final
+            while inicio_total <= fim_total:
+                hora = inicio_total // 60
+                minuto = inicio_total % 60
+                data_hora = datetime.strptime(f'{data} {hora:02d}:{minuto:02d}', '%d/%m/%Y %H:%M')
+                View.horario_inserir(data_hora, False, None, None, st.session_state['usuario_id'])
+                inicio_total += int(intervalo)
+            st.success('Horários abertos com sucesso')
+            time.sleep(2)
+            st.rerun()
+
+class VisualizarMinhaAgendaUI:
+    def main():
+        st.header('Visualizar Minha Agenda')
+        list_dic = []
+        for h in View.horario_listar():
+            if h.get_id_profissional() == st.session_state['usuario_id']:
+                cliente = h.get_id_cliente()
+                if cliente != None:
+                    cliente = View.cliente_listar_id(cliente).get_nome()
+                servico = h.get_id_servico()
+                if servico != None:
+                    servico = View.servico_listar_id(servico).get_desc()
+                list_dic.append({'ID':h.get_id(), 'Data':h.get_data(), 'Confirmado':h.get_confirmado(), 'Cliente':cliente, 'Serviço':servico})
+        df = pd.DataFrame(list_dic)
+        st.dataframe(df)
+
+class VisualizarMeusServicosUI:
+    def main():
+        st.header('Visualizar Meus Serviços')
+        list_dic = []
+        for h in View.horario_listar():
+            if h.get_id_cliente() == st.session_state['usuario_id']:
+                servico = View.servico_listar_id(h.get_id_servico()).get_desc()
+                profissional = View.profissional_listar_id(h.get_id_profissional()).get_nome()
+                list_dic.append({'ID':h.get_id(), 'Data':h.get_data(), 'Confirmado':h.get_confirmado(), 'Serviço':servico, 'Profissional':profissional})
+        df = pd.DataFrame(list_dic)
+        st.dataframe(df)
+
+class ConfirmarServicoUI:
+    def main():
+        st.header('Confirmar Serviço')
+        horarios = []
+        for h in View.horario_listar():
+            if h.get_id_profissional() == st.session_state['usuario_id'] and not h.get_confirmado() and h.get_id_cliente() != None:
+                horarios.append(h)
+        h = st.selectbox('Informe o horário', horarios)
+        cliente = View.cliente_listar_id(h.get_id_cliente())
+        cliente = st.selectbox('Cliente', cliente, disabled = True)
+        if st.button('Confirmar'):
+            View.horario_atualizar(h.get_id(), h.get_data(), True, h.get_id_cliente(), h.get_id_servico(), st.session_state['usuario_id'])
+            st.success('Serviço confirmado com sucesso')
+            time.sleep(2)
+            st.rerun()
+
+class AlterarSenhaUI:
+    def main():
+        st.header('Alterar Senha')
+        senha = st.text_input('Informe a nova senha', type='password')
+        for c in View.cliente_listar():
+            if c.get_nome() == 'admin':
+                if st.button('Alterar'):
+                    View.cliente_atualizar(c.get_id(), c.get_nome(), c.get_email(), c.get_fone(), senha)
+                    st.success('Senha atualizada com succeso')
+                    time.sleep(2)
+                    st.rerun()

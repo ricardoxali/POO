@@ -1,12 +1,15 @@
 from model import Cliente, Servico, Horario, Profissional
 from model import ClienteDAO, ServicoDAO, HorarioDAO, ProfissionalDAO
+from datetime import datetime
 
 class View:
     def cliente_inserir(nome, email, fone, senha):
         c = Cliente(0, nome, email, fone, senha)
         ClienteDAO.inserir(c)
     def cliente_listar():
-        return ClienteDAO.listar()
+        c = ClienteDAO.listar()
+        c.sort(key=lambda obj:obj.get_nome())
+        return c
     def cliente_listar_id(id):
         return ClienteDAO.listar_id(id)
     def cliente_atualizar(id, nome, email, fone, senha):
@@ -29,7 +32,9 @@ class View:
         s = Servico(0, d, v)
         ServicoDAO.inserir(s)
     def servico_listar():
-        return ServicoDAO.listar()
+        s = ServicoDAO.listar()
+        s.sort(key=lambda obj:obj.get_desc())
+        return s
     def servico_listar_id(i):
         return ServicoDAO.listar_id(i)
     def servico_atualizar(i, d, v):
@@ -47,7 +52,9 @@ class View:
         h.set_id_profissional(id_profissional)
         HorarioDAO.inserir(h)
     def horario_listar():
-        return HorarioDAO.listar()
+        h = HorarioDAO.listar()
+        h.sort(key=lambda obj:obj.get_data())
+        return h
     def horario_listar_id(id):
         return HorarioDAO.listar_id(id)
     def horario_atualizar(id, data, confirmado, id_cliente, id_servico, id_profissional):
@@ -60,12 +67,23 @@ class View:
     def horario_excluir(i):
         h = Horario(i, '1/1/2000')
         HorarioDAO.excluir(h)
+    def horario_agendar_horario(id_profissional):
+        r = []
+        agora = datetime.now()
+        for h in View.horario_listar():
+            if h.get_data() >= agora and h.get_confirmado() == False and h.get_id_cliente() == None and h.get_id_profissional() == id_profissional: # Ver se der erro
+                r.append(h)
+        r.sort(key=lambda h:h.get_data())
+        return r
+
 
     def profissional_inserir(nome, espec, conselho, email, senha):
         p = Profissional(0, nome, espec, conselho, email, senha)
         ProfissionalDAO.inserir(p)
     def profissional_listar():
-        return ProfissionalDAO.listar()
+        p = ProfissionalDAO.listar()
+        p.sort(key=lambda obj:obj.get_nome())
+        return p
     def profissional_listar_id(id):
         return ProfissionalDAO.listar_id(id)
     def profissional_atualizar(id, nome, espec, conselho, email, senha):

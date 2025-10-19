@@ -1,25 +1,30 @@
-import streamlit as st
 from view import View
-from template import ManterClienteUI, ManterServicoUI, ManterHorarioUI, ManterProfissionalUI
-from UI import LoginUI, AbrirContaUI, PerfilClienteUI, PerfilProfissionalUI
+import template
+import streamlit as st
 
 class IndexUI:
     def menu_admin():            
-        op = st.sidebar.selectbox("Menu", ["Cadastro de Clientes", "Cadastro de Serviços", "Cadastro de Profissionais", "Cadastro de Horários"])
-        if op == "Cadastro de Clientes": ManterClienteUI.main()
-        if op == "Cadastro de Serviços": ManterServicoUI.main()
-        if op == "Cadastro de Profissionais": ManterProfissionalUI.main()
-        if op == "Cadastro de Horários": ManterHorarioUI.main()
+        op = st.sidebar.selectbox("Menu", ['Cadastro de Clientes', 'Cadastro de Serviços', 'Cadastro de Profissionais', 'Cadastro de Horários', 'Alterar Senha'])
+        if op == 'Cadastro de Clientes': template.ManterClienteUI.main()
+        if op == 'Cadastro de Serviços': template.ManterServicoUI.main()
+        if op == 'Cadastro de Profissionais': template.ManterProfissionalUI.main()
+        if op == 'Cadastro de Horários': template.ManterHorarioUI.main()
+        if op == 'Alterar Senha': template.AlterarSenhaUI.main()
     def menu_visitante():
         op = st.sidebar.selectbox('Menu', ['Entrar no Sistema', 'Abrir Conta'])
-        if op == 'Entrar no Sistema': LoginUI.main()
-        if op == 'Abrir Conta': AbrirContaUI.main()
+        if op == 'Entrar no Sistema': template.LoginUI.main()
+        if op == 'Abrir Conta': template.AbrirContaUI.main()
     def menu_cliente():
-        op = st.sidebar.selectbox('Menu', ['Meus Dados'])
-        if op == 'Meus Dados': PerfilClienteUI.main()
+        op = st.sidebar.selectbox('Menu', ['Meus Dados', 'Agendar Serviço', 'Visualizar Meus Serviços'])
+        if op == 'Meus Dados': template.PerfilClienteUI.main()
+        if op == 'Agendar Serviço': template.AgendarServicoUI.main()
+        if op == 'Visualizar Meus Serviços': template.VisualizarMeusServicosUI.main()
     def menu_profissional():
-        op = st.sidebar.selectbox('Menu', ['Meus Dados'])
-        if op == 'Meus Dados': PerfilProfissionalUI.main()
+        op = st.sidebar.selectbox('Menu', ['Meus Dados', 'Abrir Minha Agenda', 'Visualizar Minha Agenda', 'Confirmar Serviço'])
+        if op == 'Meus Dados': template.PerfilProfissionalUI.main()
+        if op == 'Abrir Minha Agenda': template.AbrirMinhaAgendaUI.main()
+        if op == 'Visualizar Minha Agenda': template.VisualizarMinhaAgendaUI.main()
+        if op == 'Confirmar Serviço': template.ConfirmarServicoUI.main()
     def sair_sistema():
         if st.sidebar.button('Sair'):
             del st.session_state['usuario_id']

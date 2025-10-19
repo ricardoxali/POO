@@ -156,8 +156,8 @@ class ClienteDAO:
         cls.abrir()
         aux = cls.listar_id(obj.get_id())
         if aux != None:
-            cls.__objetos.remove(aux)
-            cls.__objetos.append(obj)
+            index = cls.__objetos.index(aux)
+            cls.__objetos[index] = obj
             cls.salvar()
     @classmethod
     def excluir(cls, obj):
@@ -209,8 +209,8 @@ class ServicoDAO:
         cls.abrir()
         aux = cls.listar_id(obj.get_id())
         if aux != None:
-            cls.__objetos.remove(aux)
-            cls.__objetos.append(obj)
+            index = cls.__objetos.index(aux)
+            cls.__objetos[index] = obj
             cls.salvar()
     @classmethod
     def excluir(cls, obj):
@@ -263,8 +263,8 @@ class HorarioDAO:
         cls.abrir()
         aux = cls.listar_id(obj.get_id())
         if aux != None:
-            cls.__objetos.remove(aux)
-            cls.__objetos.append(obj)
+            index = cls.__objetos.index(aux)
+            cls.__objetos[index] = obj
             cls.salvar()
     @classmethod
     def excluir(cls, obj):
@@ -317,8 +317,8 @@ class ProfissionalDAO:
         cls.abrir()
         aux = cls.listar_id(obj.get_id())
         if aux != None:
-            cls.__objetos.remove(aux)
-            cls.__objetos.append(obj)
+            index = cls.__objetos.index(aux)
+            cls.__objetos[index] = obj
             cls.salvar()
     @classmethod
     def excluir(cls, obj):
