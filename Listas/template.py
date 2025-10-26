@@ -28,8 +28,11 @@ class ManterClienteUI:
         fone = st.text_input("Informe o telefone")
         senha = st.text_input("Informe a senha", None, type="password")
         if st.button("Inserir"):
-            View.cliente_inserir(nome, email, fone, senha)
-            st.success("Cliente inserido com sucesso")
+            try:
+                View.cliente_inserir(nome, email, fone, senha)
+                st.success("Cliente inserido com sucesso")
+            except ValueError as erro:
+                st.error(erro)
             time.sleep(2)
             st.rerun()
     def atualizar():
@@ -42,9 +45,12 @@ class ManterClienteUI:
             fone = st.text_input("Informe o novo fone", op.get_fone())
             senha = st.text_input("Informe a nova senha", op.get_senha(), type="password")
             if st.button("Atualizar"):
-                id = op.get_id()
-                View.cliente_atualizar(id, nome, email, fone, senha)
-                st.success("Cliente atualizado com sucesso")
+                try:
+                    id = op.get_id()
+                    View.cliente_atualizar(id, nome, email, fone, senha)
+                    st.success("Cliente atualizado com sucesso")
+                except ValueError as erro:
+                    st.error(erro)
                 time.sleep(2)
                 st.rerun()
     def excluir():
@@ -53,9 +59,12 @@ class ManterClienteUI:
         else:
             op = st.selectbox("Exclusão de Clientes", clientes)
             if st.button("Excluir"):
-                id = op.get_id()
-                View.cliente_excluir(id)
-                st.success("Cliente excluído com sucesso")
+                try:
+                    id = op.get_id()
+                    View.cliente_excluir(id)
+                    st.success("Cliente excluído com sucesso")
+                except ValueError as erro:
+                    st.error(erro)
                 time.sleep(2)
                 st.rerun()
 
@@ -83,8 +92,11 @@ class ManterServicoUI:
         desc = st.text_input('Informe a descrição')
         valor = st.text_input('Informe o valor')
         if st.button('Inserir'):
-            View.servico_inserir(desc, valor)
-            st.success('Serviço inserido com sucesso')
+            try: 
+                View.servico_inserir(desc, float(valor))
+                st.success('Serviço inserido com sucesso')
+            except ValueError as erro:
+                st.error(erro)
             time.sleep(2)
             st.rerun()
     def atualizar():
@@ -95,9 +107,12 @@ class ManterServicoUI:
             desc = st.text_input('Nova descrição', op.get_desc())
             valor = st.text_input('Novo valor', f'{op.get_valor():.2f}')
             if st.button('Atualizar'):
-                id = op.get_id()
-                View.servico_atualizar(id, desc, valor)
-                st.success('Serviço atualizado com sucesso')
+                try:
+                    id = op.get_id()
+                    View.servico_atualizar(id, desc, float(valor))
+                    st.success('Serviço atualizado com sucesso')
+                except ValueError as erro:
+                    st.error(erro)
                 time.sleep(2)
                 st.rerun()
     def excluir():
@@ -106,9 +121,12 @@ class ManterServicoUI:
         else:
             op = st.selectbox('Exclusão de Serviços', servicos)
             if st.button('Excluir'):
-                i = op.get_id()
-                View.servico_excluir(i)
-                st.success('Serviço excluído com sucesso')
+                try:
+                    i = op.get_id()
+                    View.servico_excluir(i)
+                    st.success('Serviço excluído com sucesso')
+                except ValueError as erro:
+                    st.error(erro)
                 time.sleep(2)
                 st.rerun()
 
@@ -154,21 +172,24 @@ class ManterHorarioUI:
             st.warning('⚠️ Nenhum profissional cadastrado.')
         else:
             profissional = st.selectbox('Informe o profissional', profissionais, index = None)
-            if st.button('Inserir'):
-                if profissional == None:
-                    st.write('Selecione um profissional')
-                else:
-                    id_cliente, id_servico, id_profissional = None, None, None
-                    if cliente != None:
-                        id_cliente = cliente.get_id()
-                    if servico != None:
-                        id_servico = servico.get_id()
-                    if profissional != None:
-                        id_profissional = profissional.get_id()
-                    View.horario_inserir(datetime.strptime(data, '%d/%m/%Y %H:%M'), confirmado, id_cliente, id_servico, id_profissional)
-                    st.success('Horário inserido com sucesso')
-                    time.sleep(2)
-                    st.rerun()
+            if st.button('Inserir'): # VERIFICAR
+                try:
+                    if profissional == None:
+                        st.write('Selecione um profissional')
+                    else:
+                        id_cliente, id_servico, id_profissional = None, None, None
+                        if cliente != None:
+                            id_cliente = cliente.get_id()
+                        if servico != None:
+                            id_servico = servico.get_id()
+                        if profissional != None:
+                            id_profissional = profissional.get_id()
+                        View.horario_inserir(datetime.strptime(data, '%d/%m/%Y %H:%M'), confirmado, id_cliente, id_servico, id_profissional)
+                        st.success('Horário inserido com sucesso')
+                except ValueError as erro:
+                    st.error(erro)
+                time.sleep(2)
+                st.rerun()
     def atualizar():
         horarios = View.horario_listar()
         if len(horarios) == 0: st.write('Nenhum horário cadastrado')
@@ -209,18 +230,21 @@ class ManterHorarioUI:
                     ind = i
                     break
             profissional = st.selectbox('Informe o novo profissional', profissionais, index = ind)
-            if st.button('Atualizar'):
-                id_cliente = None
-                id_servico = None
-                id_profissional = None
-                if cliente != None:
-                    id_cliente = cliente.get_id()
-                if servico != None:
-                    id_servico = servico.get_id()
-                if profissional != None:
-                    id_profissional = profissional.get_id()
-                View.horario_atualizar(op.get_id(), datetime.strptime(data, "%d/%m/%Y %H:%M"), confirmado, id_cliente, id_servico, id_profissional)
-                st.success('Horário atualizado com sucesso')
+            if st.button('Atualizar'): # VERIFICAR
+                try:
+                    id_cliente = None
+                    id_servico = None
+                    id_profissional = None
+                    if cliente != None:
+                        id_cliente = cliente.get_id()
+                    if servico != None:
+                        id_servico = servico.get_id()
+                    if profissional != None:
+                        id_profissional = profissional.get_id()
+                    View.horario_atualizar(op.get_id(), datetime.strptime(data, "%d/%m/%Y %H:%M"), confirmado, id_cliente, id_servico, id_profissional)
+                    st.success('Horário atualizado com sucesso')
+                except ValueError as erro:
+                    st.error(erro)
                 time.sleep(2)
                 st.rerun()
     def excluir():
@@ -230,8 +254,11 @@ class ManterHorarioUI:
         else:
             op = st.selectbox('Exclusão de Horários', horarios)
             if st.button('Excluir'):
-                View.horario_excluir(op.get_id())
-                st.success('Horário excluído com sucesso')
+                try:
+                    View.horario_excluir(op.get_id())
+                    st.success('Horário excluído com sucesso')
+                except ValueError as erro:
+                    st.error(erro)
                 time.sleep(2)
                 st.rerun()
 
@@ -259,8 +286,11 @@ class ManterProfissionalUI:
         email = st.text_input('Informe o email')
         senha = st.text_input('Informe a senha', type='password')
         if st.button("Inserir"):
-            View.profissional_inserir(nome, espec, conselho, email, senha)
-            st.success("Profissional inserido com sucesso")
+            try:
+                View.profissional_inserir(nome, espec, conselho, email, senha)
+                st.success("Profissional inserido com sucesso")
+            except ValueError as erro:
+                st.error(erro)
             time.sleep(2)
             st.rerun()
     def atualizar():
@@ -274,9 +304,12 @@ class ManterProfissionalUI:
             email = st.text_input('Informe o novo email', op.get_email())
             senha = st.text_input('Informe a nova senha', op.get_senha(), type='password')
             if st.button("Atualizar"):
-                id = op.get_id()
-                View.profissional_atualizar(id, nome, espec, conselho, email, senha)
-                st.success("Profissional atualizado com sucesso")
+                try:
+                    id = op.get_id()
+                    View.profissional_atualizar(id, nome, espec, conselho, email, senha)
+                    st.success("Profissional atualizado com sucesso")
+                except ValueError as erro:
+                    st.error(erro)
                 time.sleep(2)
                 st.rerun()
     def excluir():
@@ -285,9 +318,12 @@ class ManterProfissionalUI:
         else:
             op = st.selectbox("Exclusão de Profissionais", profissionais)
             if st.button("Excluir"):
-                id = op.get_id()
-                View.profissional_excluir(id)
-                st.success("Profissional excluído com sucesso")
+                try:
+                    id = op.get_id()
+                    View.profissional_excluir(id)
+                    st.success("Profissional excluído com sucesso")
+                except ValueError as erro:
+                    st.error(erro)
                 time.sleep(2)
                 st.rerun()
 
@@ -314,8 +350,11 @@ class AbrirContaUI:
         fone = st.text_input('Informe a telefone')
         senha = st.text_input('Informe a senha', type='password')
         if st.button('Inserir'):
-            View.cliente_inserir(nome, email, fone, senha)
-            st.success('Conta criada com sucesso')
+            try:
+                View.cliente_inserir(nome, email, fone, senha)
+                st.success('Conta criada com sucesso')
+            except ValueError as erro:
+                st.error(erro)
             time.sleep(2)
             st.rerun()
 
@@ -328,9 +367,14 @@ class PerfilClienteUI:
         fone = st.text_input('Informe o novo telefone', op.get_fone())
         senha = st.text_input('Informe a nova senha', op.get_senha(), type='password')
         if st.button('Atualizar'):
-            id = op.get_id()
-            View.cliente_atualizar(id, nome, email, fone, senha)
-            st.success('Cliente atualizado com sucesso')
+            try:
+                id = op.get_id()
+                View.cliente_atualizar(id, nome, email, fone, senha)
+                st.success('Cliente atualizado com sucesso')
+            except ValueError as erro:
+                st.error(erro)
+            time.sleep(2)
+            st.rerun()
 
 class PerfilProfissionalUI:
     def main():
@@ -342,9 +386,14 @@ class PerfilProfissionalUI:
         email = st.text_input('Informe o novo email', op.get_email())
         senha = st.text_input('Informe a nova senha', op.get_senha(), type='password')
         if st.button('Atualizar'):
-            id = op.get_id()
-            View.profissional_atualizar(id, nome, espec, conselho, email, senha)
-            st.success('Profissional atualizado com sucesso')
+            try:
+                id = op.get_id()
+                View.profissional_atualizar(id, nome, espec, conselho, email, senha)
+                st.success('Profissional atualizado com sucesso')
+            except ValueError as erro:
+                st.error(erro)
+            time.sleep(2)
+            st.rerun()
 
 class AgendarServicoUI:
     def main():
@@ -373,17 +422,20 @@ class AbrirMinhaAgendaUI:
         horario_final = st.text_input('Informe o horário final no formato HH:MM')
         intervalo = st.text_input('Informe o intervalo entre os horários (min)')
         if st.button('Abrir Agenda'):
-            hora_inicial, min_inicial = map(int, horario_inicial.split(':'))
-            hora_final, min_final = map(int, horario_final.split(':'))
-            inicio_total = hora_inicial * 60 + min_inicial
-            fim_total = hora_final * 60 + min_final
-            while inicio_total <= fim_total:
-                hora = inicio_total // 60
-                minuto = inicio_total % 60
-                data_hora = datetime.strptime(f'{data} {hora:02d}:{minuto:02d}', '%d/%m/%Y %H:%M')
-                View.horario_inserir(data_hora, False, None, None, st.session_state['usuario_id'])
-                inicio_total += int(intervalo)
-            st.success('Horários abertos com sucesso')
+            try: # VERIFICAR
+                hora_inicial, min_inicial = map(int, horario_inicial.split(':'))
+                hora_final, min_final = map(int, horario_final.split(':'))
+                inicio_total = hora_inicial * 60 + min_inicial
+                fim_total = hora_final * 60 + min_final
+                while inicio_total <= fim_total:
+                    hora = inicio_total // 60
+                    minuto = inicio_total % 60
+                    data_hora = datetime.strptime(f'{data} {hora:02d}:{minuto:02d}', '%d/%m/%Y %H:%M')
+                    View.horario_inserir(data_hora, False, None, None, st.session_state['usuario_id'])
+                    inicio_total += int(intervalo)
+                st.success('Horários abertos com sucesso')
+            except ValueError as erro:
+                st.error(erro)
             time.sleep(2)
             st.rerun()
 
@@ -400,8 +452,10 @@ class VisualizarMinhaAgendaUI:
                 if servico != None:
                     servico = View.servico_listar_id(servico).get_desc()
                 list_dic.append({'ID':h.get_id(), 'Data':h.get_data(), 'Confirmado':h.get_confirmado(), 'Cliente':cliente, 'Serviço':servico})
-        df = pd.DataFrame(list_dic)
-        st.dataframe(df)
+        if len(list_dic) == 0: st.write('Agenda Vazia')
+        else:
+            df = pd.DataFrame(list_dic)
+            st.dataframe(df)
 
 class VisualizarMeusServicosUI:
     def main():
@@ -409,11 +463,15 @@ class VisualizarMeusServicosUI:
         list_dic = []
         for h in View.horario_listar():
             if h.get_id_cliente() == st.session_state['usuario_id']:
-                servico = View.servico_listar_id(h.get_id_servico()).get_desc()
+                servico = View.servico_listar_id(h.get_id_servico())
+                if servico != None:
+                    servico = servico.get_desc()
                 profissional = View.profissional_listar_id(h.get_id_profissional()).get_nome()
                 list_dic.append({'ID':h.get_id(), 'Data':h.get_data(), 'Confirmado':h.get_confirmado(), 'Serviço':servico, 'Profissional':profissional})
-        df = pd.DataFrame(list_dic)
-        st.dataframe(df)
+        if len(list_dic) == 0: st.write('Nenhum serviço agendado')
+        else:
+            df = pd.DataFrame(list_dic)
+            st.dataframe(df)
 
 class ConfirmarServicoUI:
     def main():
@@ -422,14 +480,18 @@ class ConfirmarServicoUI:
         for h in View.horario_listar():
             if h.get_id_profissional() == st.session_state['usuario_id'] and not h.get_confirmado() and h.get_id_cliente() != None:
                 horarios.append(h)
+        if len(horarios) == 0:
+            st.write('Nenhum serviço pendente')
+            return
         h = st.selectbox('Informe o horário', horarios)
-        cliente = View.cliente_listar_id(h.get_id_cliente())
-        cliente = st.selectbox('Cliente', cliente, disabled = True)
-        if st.button('Confirmar'):
-            View.horario_atualizar(h.get_id(), h.get_data(), True, h.get_id_cliente(), h.get_id_servico(), st.session_state['usuario_id'])
-            st.success('Serviço confirmado com sucesso')
-            time.sleep(2)
-            st.rerun()
+        if h != None:
+            cliente = View.cliente_listar_id(h.get_id_cliente())
+            cliente = st.selectbox('Cliente', cliente, disabled = True)
+            if st.button('Confirmar'):
+                View.horario_atualizar(h.get_id(), h.get_data(), True, h.get_id_cliente(), h.get_id_servico(), st.session_state['usuario_id'])
+                st.success('Serviço confirmado com sucesso')
+                time.sleep(2)
+                st.rerun()
 
 class AlterarSenhaUI:
     def main():
