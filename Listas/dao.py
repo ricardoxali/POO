@@ -3,7 +3,7 @@ from abc import ABC, abstractmethod
 class DAO(ABC):
     _objetos = []
     @classmethod
-    def inserir(cls, obj): # DIFERENTE EM CLIENTE
+    def inserir(cls, obj):
         cls.abrir()
         id = 0
         for aux in cls._objetos:
