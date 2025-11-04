@@ -403,10 +403,12 @@ class AgendarServicoUI:
         else:
             profissional = st.selectbox('Informe o profissional', profs)
             horarios = View.horario_agendar_horario(profissional.get_id())
+            servicos = View.servico_listar()
             if len(horarios) == 0: st.write('Nenhum horário disponível')
             else:
                 horario = st.selectbox('Informe o horário', horarios)
-                servicos = View.servico_listar()
+            if len(servicos) == 0: st.write('Nenhum serviço disponível')
+            else:
                 servico = st.selectbox('Informe o serviço', servicos)
                 if st.button('Agendar'):
                     View.horario_atualizar(horario.get_id(), horario.get_data(), False, st.session_state['usuario_id'], servico.get_id(), profissional.get_id())
@@ -422,7 +424,7 @@ class AbrirMinhaAgendaUI:
         horario_final = st.text_input('Informe o horário final no formato HH:MM')
         intervalo = st.text_input('Informe o intervalo entre os horários (min)')
         if st.button('Abrir Agenda'):
-            try: # VERIFICAR
+            try:
                 hora_inicial, min_inicial = map(int, horario_inicial.split(':'))
                 hora_final, min_final = map(int, horario_final.split(':'))
                 inicio_total = hora_inicial * 60 + min_inicial
@@ -504,3 +506,19 @@ class AlterarSenhaUI:
                     st.success('Senha atualizada com succeso')
                     time.sleep(2)
                     st.rerun()
+
+class FeedbackUI:
+    def main():
+        st.header('Feedback de Profissionais')
+        list_dic = []
+        profs = View.profissional_listar()
+        for obj in profs:
+            list_dic.append({'ID':obj.get_id(), 'Nome':obj.get_nome(), 'Agendamentos':0})
+        for h in View.horario_listar():
+            for obj in list_dic:
+                if obj['ID'] == h.get_id_profissional() and h.get_id_cliente() != None:
+                    obj['Agendamentos'] += 1
+        if len(list_dic) == 0: st.write('Nenhum profissional cadastrado')
+        else:
+            df = pd.DataFrame(list_dic)
+            st.dataframe(df)

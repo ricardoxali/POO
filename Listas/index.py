@@ -4,12 +4,13 @@ import streamlit as st
 
 class IndexUI:
     def menu_admin():            
-        op = st.sidebar.selectbox("Menu", ['Cadastro de Clientes', 'Cadastro de Serviços', 'Cadastro de Profissionais', 'Cadastro de Horários', 'Alterar Senha'])
+        op = st.sidebar.selectbox("Menu", ['Cadastro de Clientes', 'Cadastro de Serviços', 'Cadastro de Profissionais', 'Cadastro de Horários', 'Alterar Senha', 'Feedback de Profissionais'])
         if op == 'Cadastro de Clientes': template.ManterClienteUI.main()
         if op == 'Cadastro de Serviços': template.ManterServicoUI.main()
         if op == 'Cadastro de Profissionais': template.ManterProfissionalUI.main()
         if op == 'Cadastro de Horários': template.ManterHorarioUI.main()
         if op == 'Alterar Senha': template.AlterarSenhaUI.main()
+        if op == 'Feedback de Profissionais': template.FeedbackUI.main()
     def menu_visitante():
         op = st.sidebar.selectbox('Menu', ['Entrar no Sistema', 'Abrir Conta'])
         if op == 'Entrar no Sistema': template.LoginUI.main()

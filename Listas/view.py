@@ -23,20 +23,16 @@ class View:
     def cliente_listar_id(i):
         return ClienteDAO.listar_id(i)
     def cliente_atualizar(i, n, e, f, s):
+        user_atual = View.cliente_listar_id(i)
+        admin = user_atual.get_email() == 'admin'
+        if not admin and e == 'admin':
+            raise ValueError('E-mail Inválido')
         usuarios = []
         for obj in View.cliente_listar():
             if obj.get_id() != i:
                 usuarios.append(obj)
         for obj in View.profissional_listar():
             usuarios.append(obj)
-        if e == 'admin':
-            admin = False
-            for obj in usuarios:
-                if obj.get_id() == i and obj.get_email() == 'admin':
-                    admin = True
-                    break
-            if not admin:
-                raise ValueError('E-mail Inválido')
         for obj in usuarios:
             if obj.get_email() == e:
                 raise ValueError('E-mail já cadastrado')
@@ -124,7 +120,6 @@ class View:
                 r.append(h)
         r.sort(key=lambda h:h.get_data())
         return r
-
 
     def profissional_inserir(n, es, c, em, s):
         usuarios = []
