@@ -1,5 +1,5 @@
 from model import Cliente, Servico, Horario, Profissional
-from model import ClienteDAO, ServicoDAO, HorarioDAO, ProfissionalDAO
+from dao import ClienteDAO, ServicoDAO, HorarioDAO, ProfissionalDAO
 from datetime import datetime
 
 class View:
